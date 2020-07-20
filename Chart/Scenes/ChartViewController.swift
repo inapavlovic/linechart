@@ -29,7 +29,8 @@ class ChartViewController: UIViewController {
         chartView.animate(yAxisDuration: 2.0)
         
         chartView.xAxis.gridLineDashLengths = [4.0, 4.0]
-        chartView.xAxis.gridLineDashPhase = 0
+        
+        chartView.legend.form = .none
         
         return chartView
     }()
@@ -54,26 +55,30 @@ class ChartViewController: UIViewController {
     }
     
     func setData() {
-        let dataSet = LineChartDataSet(entries: Data.values, label: "Values")
+        let dataSet = LineChartDataSet(entries: Data.values, label: nil)
+        configureDataSet(dataSet, color: UIColor.systemBlue)
+        
+        let dataSet1 = LineChartDataSet(entries: Data.values1, label: nil)
+        configureDataSet(dataSet1, color: UIColor.systemRed)
+        
+        let data = LineChartData(dataSets: [dataSet, dataSet1])
+        data.setDrawValues(false)
+        lineChartView.data = data
+    }
+    
+    func configureDataSet(_ dataSet: LineChartDataSet, color: UIColor) {
         dataSet.drawCirclesEnabled = false
         dataSet.mode = .cubicBezier
         dataSet.lineWidth = 4.0
-        dataSet.setColor(.systemBlue)
-        let colors = [UIColor.white.cgColor, UIColor.systemBlue.cgColor]
+        dataSet.setColor(color)
+        let colors = [UIColor.white.cgColor, color.cgColor]
         let gradient = CGGradient(colorsSpace: nil, colors: colors as CFArray, locations: nil)!
         dataSet.fill = Fill(linearGradient: gradient, angle: 90)
-//        dataSet.fill = Fill(color: UIColor.systemBlue)
-//        dataSet.fillAlpha = 0.1
         dataSet.drawFilledEnabled = true
-        
         dataSet.drawVerticalHighlightIndicatorEnabled = false
-        dataSet.highlightColor = .systemBlue
+        dataSet.highlightColor = color
         dataSet.highlightLineWidth = 1.0
         dataSet.highlightLineDashLengths = [4.0, 4.0]
-        
-        let data = LineChartData(dataSet: dataSet)
-        data.setDrawValues(false)
-        lineChartView.data = data
     }
 
 }
